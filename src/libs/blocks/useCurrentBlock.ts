@@ -3,6 +3,7 @@ import {
   useUserDoc,
   addArrayItemUserDoc,
   setUserDoc,
+  updateUserDoc,
 } from 'libs/platform/data';
 import useProjects from 'libs/projects/useProjects';
 import type { BlockData, Block } from './types';
@@ -20,9 +21,14 @@ const useCurrentBlock = () => {
     }
   }, [data, projects]);
 
-  const pushCurrentBlock = async () => {
+  const updateCurrentBlock = async (title: string) => {
+    await updateUserDoc({ title }, 'data/currentBlock');
+  };
+
+  const pushCurrentBlock = async (title: string) => {
     if (currentBlock) {
-      const blockData = blockToData(currentBlock);
+      updateCurrentBlock(title);
+      const blockData = blockToData({ ...currentBlock, title });
       try {
         await addArrayItemUserDoc(blockData, 'blocks', 'blocks', getId());
       } catch {
@@ -36,6 +42,7 @@ const useCurrentBlock = () => {
     isLoading,
     error,
     pushCurrentBlock,
+    updateCurrentBlock,
   };
 };
 

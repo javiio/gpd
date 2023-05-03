@@ -47,15 +47,24 @@ export const setUserDoc = async (data: object, ...path: string[]) => {
   );
 };
 
+export const updateUserDoc = async (data: object, ...path: string[]) => {
+  const docRef = doc(
+    getFirestore(firebaseApp),
+    `users/${currentUser.id}`,
+    ...path
+  );
+  await updateDoc(docRef, data);
+};
+
 export const addArrayItemUserDoc = async (
   data: object,
   attribute: string,
   ...path: string[]
 ) => {
-  await updateDoc(
-    doc(getFirestore(firebaseApp), `users/${currentUser.id}`, ...path),
-    {
-      [attribute]: arrayUnion(data),
-    }
+  const docRef = doc(
+    getFirestore(firebaseApp),
+    `users/${currentUser.id}`,
+    ...path
   );
+  await updateDoc(docRef, { [attribute]: arrayUnion(data) });
 };
