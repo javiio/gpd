@@ -2,36 +2,33 @@ import { useState, useEffect } from 'react';
 import cn from 'classnames';
 import Error from 'libs/platform/Error';
 import Loading from 'libs/platform/Loading';
+import ProjectSelector from 'libs/projects/ProjectSelector';
 import useCurrentBlock from './useCurrentBlock';
 
 function CurrentBlock() {
   const { currentBlock, isLoading, error, pushCurrentBlock } =
     useCurrentBlock();
-  const [editMode, setEditMode] = useState(false);
-  const [title, setTitle] = useState(currentBlock?.title || '');
+  const [title, setTitle] = useState(currentBlock?.title);
+  const [project, setProject] = useState(currentBlock?.project);
 
   useEffect(() => {
-    setTitle(currentBlock?.title || '');
-  }, [currentBlock, editMode]);
+    if (currentBlock) {
+      setTitle(currentBlock.title);
+      setProject(currentBlock.project);
+    }
+  }, [currentBlock]);
 
   const push = () => {
-    pushCurrentBlock(title);
+    pushCurrentBlock(title || '', project);
   };
 
   return (
     <div>
       <div
         className={cn(
-          'w-96 h-32 bg-slate-800 m-4 border-l-4 overflow-hidden',
-          currentBlock?.project?.color
-            ? `border-${currentBlock?.project?.color}`
-            : 'border-gray-400',
-          editMode && 'border'
+          'w-96 h-32 bg-slate-800 border-l-4 overflow-hidden mb-4 border',
+          project?.color ? `border-${project?.color}` : 'border-gray-400'
         )}
-        onClick={() => setEditMode(true)}
-        onKeyDown={() => setEditMode(true)}
-        role="button"
-        tabIndex={0}
       >
         {error && <Error />}
         {isLoading && <Loading />}
@@ -43,6 +40,7 @@ function CurrentBlock() {
           />
         )}
       </div>
+      <ProjectSelector selected={project} onChange={setProject} />
       <button type="button" onClick={push}>
         Add
       </button>

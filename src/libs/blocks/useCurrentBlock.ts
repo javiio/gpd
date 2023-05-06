@@ -6,6 +6,7 @@ import {
   updateUserDoc,
 } from 'libs/platform/data';
 import useProjects from 'libs/projects/useProjects';
+import type { Project } from 'libs/projects/types';
 import type { BlockData, Block } from './types';
 import { dataToBlock, blockToData, getId } from './utils';
 
@@ -25,10 +26,14 @@ const useCurrentBlock = () => {
     await updateUserDoc({ title }, 'data/currentBlock');
   };
 
-  const pushCurrentBlock = async (title: string) => {
+  const pushCurrentBlock = async (title: string, project?: Project) => {
     if (currentBlock) {
       updateCurrentBlock(title);
-      const blockData = blockToData({ ...currentBlock, title });
+      const blockData = blockToData({
+        ...currentBlock,
+        title,
+        projectId: project?.id,
+      });
       try {
         await addArrayItemUserDoc(blockData, 'blocks', 'blocks', getId());
       } catch {
