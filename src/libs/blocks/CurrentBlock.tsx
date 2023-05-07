@@ -3,12 +3,13 @@ import cn from 'classnames';
 import Error from 'libs/platform/Error';
 import Loading from 'libs/platform/Loading';
 import ProjectSelector from 'libs/projects/ProjectSelector';
+import type { Project } from 'libs/projects/types';
 import useCurrentBlock from './useCurrentBlock';
 
 function CurrentBlock() {
   const { currentBlock, isLoading, error, pushCurrentBlock } =
     useCurrentBlock();
-  const [title, setTitle] = useState(currentBlock?.title);
+  const [title, setTitle] = useState(currentBlock?.title || '');
   const [project, setProject] = useState(currentBlock?.project);
 
   useEffect(() => {
@@ -19,7 +20,7 @@ function CurrentBlock() {
   }, [currentBlock]);
 
   const push = () => {
-    pushCurrentBlock(title || '', project);
+    pushCurrentBlock(title, project as Project);
   };
 
   return (

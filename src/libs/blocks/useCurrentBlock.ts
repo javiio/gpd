@@ -26,13 +26,13 @@ const useCurrentBlock = () => {
     await updateUserDoc({ title }, 'data/currentBlock');
   };
 
-  const pushCurrentBlock = async (title: string, project?: Project) => {
+  const pushCurrentBlock = async (title: string, project: Project) => {
     if (currentBlock) {
       updateCurrentBlock(title);
       const blockData = blockToData({
         ...currentBlock,
         title,
-        projectId: project?.id,
+        projectId: project.id,
       });
       try {
         await addArrayItemUserDoc(blockData, 'blocks', 'blocks', getId());
