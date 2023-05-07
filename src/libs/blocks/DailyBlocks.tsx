@@ -42,6 +42,33 @@ function DailyBlocks() {
     };
   }, []);
 
+  const renderBlocks = () => {
+    const blocksPerProject: Record<string, number> = {};
+    return blocks?.map((block) => {
+      const count = (blocksPerProject[block.projectId] || 0) + 1;
+      blocksPerProject[block.projectId] = count;
+      return (
+        <div
+          className={cn(
+            'mx-3 py-1 px-4 text-sm absolute w-96',
+            `border border-l-8 border-${block.project.color}`,
+            `bg-${block.project.color}/10`
+          )}
+          style={{
+            height: BLOCK_TIME * HEIGHT_PER_MINUTE,
+            top: calcBlockPosition(block),
+          }}
+        >
+          {block.title}
+
+          <div className="absolute top-1 right-2 opacity-50 text-sm">
+            {count}
+          </div>
+        </div>
+      );
+    });
+  };
+
   return (
     <div className="m-4 flex">
       <div>
@@ -68,28 +95,14 @@ function DailyBlocks() {
           </>
         ))}
 
+        {renderBlocks()}
+
         <div
           className="w-full h-0.5 bg-red-500 absolute"
           style={{ top: currentTimePosition }}
         >
           <div className="w-2.5 h-2.5 bg-red-500 rounded-full -mt-1" />
         </div>
-
-        {blocks?.map((block) => (
-          <div
-            className={cn(
-              'mx-3 py-1 px-4 text-sm absolute w-96',
-              `border border-l-8 border-${block.project?.color}`,
-              `bg-${block.project?.color}/10`
-            )}
-            style={{
-              height: BLOCK_TIME * HEIGHT_PER_MINUTE,
-              top: calcBlockPosition(block),
-            }}
-          >
-            {block.title} here
-          </div>
-        ))}
       </div>
     </div>
   );
